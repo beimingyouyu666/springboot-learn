@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>springboot-thymeleaf demo</title>
+    <script type="text/javascript" src="/js/jquery-3.1.1.min.js"></script>
+</head>
+
+<body>
+<p th:text="'hello, ' + ${name} + '!'"/></body>
+
+<button id="import" name="导出表格" onclick="f()">导出表格</button>
+<button id="import2" name="导出表格2">导出表格2</button>
+<input id="name">
+<input id="password">
+
+<div id="exportBody"></div>
+
+
+<script th:inline="javascript" type="text/javascript">
+
+    $(function(){
+        $("#import2").click(function () {
+            var name = document.getElementById("name")
+            var password = document.getElementById("password")
+            var searchCondition ={
+                name:name,
+                password:password
+            }
+            var form = $('<form method="POST" action="' + "localhost:9090/excelUtils/export" + '">');
+            // $.each(searchCondition, function(k, v) {
+            //     form.append($('<input type="hidden" name="' + k +
+            //         '" value="' + v + '">'));
+            // });
+            $('#exportBody').append(form);
+            form.submit(); //自动提交
+        })
+
+        function f() {
+            alert(111);
+            var name = document.getElementById("name")
+            var password = document.getElementById("password")
+            var searchCondition ={
+                name:name,
+                password:password
+            }
+            var form = $('<form method="POST" action="' + "localhost:8080/excelUtils/export" + '">');
+            $.each(searchCondition, function(k, v) {
+                form.append($('<input type="hidden" name="' + k +
+                    '" value="' + v + '">'));
+            });
+            $('#exportBody').append(form);
+            form.submit(); //自动提交
+            // window.location.href="localhost:8080/hello";
+        }
+    });
+
+
+    (function($, window) {
+        $("import2").click(function () {
+            alert(333);
+            var name = document.getElementById("name")
+            var password = document.getElementById("password")
+            var searchCondition ={
+                name:name,
+                password:password
+            }
+            var form = $('<form method="POST" action="' + CHECK.EXPORT_URL + '">');
+            $.each(searchCondition, function(k, v) {
+                form.append($('<input type="hidden" name="' + k +
+                    '" value="' + v + '">'));
+            });
+            $('#exportBody').append(form);
+            form.submit(); //自动提交
+        })
+
+
+        function f() {
+            alert(111);
+            var name = document.getElementById("name")
+            var password = document.getElementById("password")
+            var searchCondition ={
+                name:name,
+                password:password
+            }
+            var form = $('<form method="POST" action="' + "localhost:8080/excelUtils/export" + '">');
+            $.each(searchCondition, function(k, v) {
+                form.append($('<input type="hidden" name="' + k +
+                    '" value="' + v + '">'));
+            });
+            $('#exportBody').append(form);
+            form.submit(); //自动提交
+            // window.location.href="localhost:8080/hello";
+        }
+
+
+
+
+
+    })(jQuery, window);
+
+
+</script>
+
+
+
+
+</body>
+</html>
+
+
