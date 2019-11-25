@@ -1,0 +1,18 @@
+
+spring:
+  mail:
+    host: smtp.sina.cn #SMTP服务器地址
+    username: 18674459050@sina.cn #登陆账号
+    password: 4dfae0264136db42 #授权码（登录密码不行）
+    properties:
+      from:  18674459050@sina.cn #邮件发信人（即真实邮箱）
+  thymeleaf:
+    cache: false
+    prefix: classpath:/views/
+  servlet:
+    multipart:
+      max-file-size: 10MB #限制单个文件大小
+      max-request-size: 50MB #限制请求总量
+
+server:
+  port: 8081
