@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/springboot-thymeleaf/pom.xml" />
         <option value="$PROJECT_DIR$/springboot-swagger/pom.xml" />
         <option value="$PROJECT_DIR$/springboot-send-mail/pom.xml" />
+        <option value="$PROJECT_DIR$/springboot-rabbitmq/pom.xml" />
       </list>
     </option>
   </component>

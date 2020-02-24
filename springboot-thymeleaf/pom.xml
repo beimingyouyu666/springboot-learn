@@ -41,11 +41,11 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <!-- 允许使用非严格的 HTML 语法 -->
-<!--        <dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-            <version>1.9.22</version>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>net.sourceforge.nekohtml</groupId>
+                    <artifactId>nekohtml</artifactId>
+                    <version>1.9.22</version>
+                </dependency>-->
 
         <!-- poi 导出excel -->
         <dependency>
@@ -76,7 +76,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
 
 
     </dependencies>

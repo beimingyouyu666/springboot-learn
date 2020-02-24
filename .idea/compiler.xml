@@ -6,12 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="springboot-rabbitmq" />
         <module name="springboot-send-mail" />
         <module name="springboot-swagger" />
         <module name="springboot-thymeleaf" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="springboot-rabbitmq" target="1.8" />
       <module name="springboot-send-mail" target="1.8" />
       <module name="springboot-swagger" target="1.8" />
       <module name="springboot-thymeleaf" target="1.8" />

@@ -18,7 +18,7 @@ import java.util.Map;
  * @blame yangkun
  */
 @Service
-public class ExportServiceImpl implements ExportService{
+public class ExportServiceImpl implements ExportService {
 
     @Override
     public void export(HttpServletResponse response, String fileName) {
@@ -28,7 +28,7 @@ public class ExportServiceImpl implements ExportService{
 
         ExcelUtils excelUtils = new ExcelUtils(contents, getHeaderInfo(), getFormatInfo());
 
-        excelUtils.sendHttpResponse(response,"导出测试",excelUtils.getWorkbook());
+        excelUtils.sendHttpResponse(response, "导出测试", excelUtils.getWorkbook());
     }
 
     // 获取格式化信息
@@ -63,7 +63,7 @@ public class ExportServiceImpl implements ExportService{
             exportContentInfo.setSalesNum(0);
             exportContentInfo.setCreateTime(Calendar.getInstance().getTime().toString());
             exportContentInfo.setUpdateTime("");
-            exportContentInfo.setIsDel((byte)0);
+            exportContentInfo.setIsDel((byte) 0);
 
             list.add(exportContentInfo);
         }
