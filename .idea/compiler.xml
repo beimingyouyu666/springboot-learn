@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="springboot-mutil-datasource" />
         <module name="springboot-rabbitmq" />
         <module name="springboot-rocketmq" />
         <module name="springboot-send-mail" />
@@ -14,6 +15,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="springboot-mutil-datasource" target="1.8" />
       <module name="springboot-rabbitmq" target="1.8" />
       <module name="springboot-rocketmq" target="1.8" />
       <module name="springboot-send-mail" target="1.8" />
