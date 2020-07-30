@@ -1,124 +1,82 @@
 package com.yangk.springbootmutildatasource.config;
 
-import com.zaxxer.hikari.HikariDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * @Description 配置数据源、事务管理
+ * @Description TODO
  * @Author yangkun
- * @Date 2020/7/29
+ * @Date 2020/7/30
  * @Version 1.0
- * @blame yangkun
  */
 @Configuration
-@EnableTransactionManagement(order = 100)
-@ConditionalOnClass(JdbcOperations.class)
-@EnableConfigurationProperties({MutiDataSourceProperties.class})
-@ConditionalOnProperty(prefix = "spring.datasource", name = "master.jdbc-url")
+@MapperScan(basePackages = "com.yangk.springbootmutildatasource.mapper", sqlSessionTemplateRef = "sqlTemplate")
 public class DataSourceConfig {
 
-    @Resource
-    MutiDataSourceProperties mutiDataSourceProperties;
-
+    // 主库
     @Bean
-    public DataSourceAspect DataSourceAspect(){
-        List<String> slaves = new ArrayList<>();
-        for(Map<String, Object> prop : mutiDataSourceProperties.getSlave()){
-            slaves.add(prop.get("pool-name").toString());
-        }
-        return new DataSourceAspect(slaves);
+    @ConfigurationProperties(prefix = "spring.datasource.master")
+    public DataSource masterDb() {
+        return DruidDataSourceBuilder.create().build();
     }
 
-    @Bean(name = "masterDataSource")
-    @ConfigurationProperties(prefix="spring.datasource.master")
-    public DataSource masterDataSource() {
-        return DataSourceBuilder.create().build();
+    /**
+     * 从库
+     */
+    @Bean
+    @ConditionalOnProperty(prefix = "spring.datasource", name = "slave", matchIfMissing = true)
+    @ConfigurationProperties(prefix = "spring.datasource.slave")
+    public DataSource slaveDb() {
+        return DruidDataSourceBuilder.create().build();
     }
 
-    @Primary
-    @Bean(name = "dataSource")
-    @Qualifier(value = "dataSource")
-    @DependsOn({"masterDataSource"})
-    public DataSource dynamicDataSource() {
-
-        HikariDataSource masterDataSource = (HikariDataSource) masterDataSource();
-
-        Map<Object, Object> targetDataSources = new HashMap<>(3);
-        targetDataSources.put(DSNames.MASTER.name(), masterDataSource);
-
-        // 添加读库
-        for(Map<String, Object> prop : mutiDataSourceProperties.getSlave()){
-            HikariDataSource ds = buildDataSource(prop, true);
-            targetDataSources.put(ds.getPoolName(), ds);
-        }
-
+    /**
+     * 主从动态配置
+     */
+    @Bean
+    public DynamicDataSource dynamicDb(@Qualifier("masterDb") DataSource masterDataSource,
+                                       @Autowired(required = false) @Qualifier("slaveDb") DataSource slaveDataSource) {
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
-        dynamicDataSource.setDefaultTargetDataSource(masterDataSource);
+        Map<Object, Object> targetDataSources = new HashMap<>();
+        targetDataSources.put(DynamicDataSourceEnum.MASTER.getDataSourceName(), masterDataSource);
+        if (slaveDataSource != null) {
+            targetDataSources.put(DynamicDataSourceEnum.SLAVE.getDataSourceName(), slaveDataSource);
+        }
         dynamicDataSource.setTargetDataSources(targetDataSources);
-
+        dynamicDataSource.setDefaultTargetDataSource(masterDataSource);
         return dynamicDataSource;
     }
-
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dynamicDataSource());
+    public SqlSessionFactory sessionFactory(@Qualifier("dynamicDb") DataSource dynamicDataSource) throws Exception {
+        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setMapperLocations(
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*Mapper.xml"));
+        bean.setDataSource(dynamicDataSource);
+        return bean.getObject();
     }
-
-    private HikariDataSource buildDataSource(Map<String, Object> map, Boolean readOnly){
-
-        String poolNameKey = "pool-name";
-        String driverClassNameKey = "driver-class-name";
-        String jdbcUrlKey = "jdbc-url";
-        String usernameKey = "username";
-        String passwordKey = "password";
-        String maximumPoolSizeKey = "maximum-pool-size";
-        String minimumIdleKey = "minimum-idle";
-
-        HikariDataSource dataSource = new HikariDataSource();
-        if(map.containsKey(poolNameKey)){
-            dataSource.setPoolName(map.get(poolNameKey).toString());
-        }
-        if(map.containsKey(driverClassNameKey)){
-            dataSource.setDriverClassName(map.get(driverClassNameKey).toString());
-        }
-        if(map.containsKey(jdbcUrlKey)){
-            dataSource.setJdbcUrl(map.get(jdbcUrlKey).toString());
-        }
-        if(map.containsKey(usernameKey)){
-            dataSource.setUsername(map.get(usernameKey).toString());
-        }
-        if(map.containsKey(passwordKey)){
-            dataSource.setPassword(map.get(passwordKey).toString());
-        }
-        if(map.containsKey(maximumPoolSizeKey)){
-            dataSource.setMaximumPoolSize(Integer.parseInt(map.get(maximumPoolSizeKey).toString()));
-        }
-        if(map.containsKey(minimumIdleKey)){
-            dataSource.setMinimumIdle(Integer.parseInt(map.get(minimumIdleKey).toString()));
-        }
-        dataSource.setReadOnly(readOnly);
-
-        return dataSource;
+    @Bean
+    public SqlSessionTemplate sqlTemplate(@Qualifier("sessionFactory") SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
     }
-
+    @Bean(name = "dataSourceTx")
+    public DataSourceTransactionManager dataSourceTx(@Qualifier("dynamicDb") DataSource dynamicDataSource) {
+        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+        dataSourceTransactionManager.setDataSource(dynamicDataSource);
+        return dataSourceTransactionManager;
+    }
 }

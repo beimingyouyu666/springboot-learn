@@ -1,6 +1,7 @@
 package com.yangk.springbootmutildatasource.mapper;
 
 
+import com.yangk.springbootmutildatasource.config.MyMapper;
 import com.yangk.springbootmutildatasource.domain.dos.UserDO;
 
 /**
@@ -10,7 +11,7 @@ import com.yangk.springbootmutildatasource.domain.dos.UserDO;
  * @Version 1.0
  * @blame yangkun
  */
-public interface UserMapper {
+public interface UserMapper extends MyMapper<UserDO> {
 
     UserDO getUserById(String userId);
 }

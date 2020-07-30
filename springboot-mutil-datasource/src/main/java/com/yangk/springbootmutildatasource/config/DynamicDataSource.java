@@ -1,21 +1,16 @@
 package com.yangk.springbootmutildatasource.config;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.lang.Nullable;
 
 /**
- * @Description
+ * @Description TODO
  * @Author yangkun
- * @Date 2020/7/29
+ * @Date 2020/7/30
  * @Version 1.0
- * @blame yangkun
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
-
-    @Nullable
     @Override
     protected Object determineCurrentLookupKey() {
-        return DSContextHolder.get();
+        return DataSourceContextHolder.get();
     }
-
 }

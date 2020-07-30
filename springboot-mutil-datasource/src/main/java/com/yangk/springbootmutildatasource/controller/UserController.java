@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @Description
  * @Author yangkun
@@ -20,9 +22,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("getUser")
-    public String getUser(String userId){
-        UserDO user = userService.getUserById(userId);
-        return user.getUserId();
+    @RequestMapping("/list")
+    public List<UserDO> userList() {
+        return userService.listUser();
+    }
+
+    @RequestMapping("/update")
+    public int update() {
+        return userService.update();
     }
 }

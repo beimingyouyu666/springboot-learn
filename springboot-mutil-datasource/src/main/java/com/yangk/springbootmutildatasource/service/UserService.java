@@ -1,6 +1,10 @@
 package com.yangk.springbootmutildatasource.service;
 
+import com.yangk.springbootmutildatasource.config.DataSourceSelector;
+import com.yangk.springbootmutildatasource.config.DynamicDataSourceEnum;
 import com.yangk.springbootmutildatasource.domain.dos.UserDO;
+
+import java.util.List;
 
 /**
  * @Description
@@ -11,5 +15,9 @@ import com.yangk.springbootmutildatasource.domain.dos.UserDO;
  */
 public interface UserService {
 
-    UserDO getUserById(String userId);
+    List<UserDO> listUser();
+
+    int update();
+
+    UserDO find();
 }

@@ -2,6 +2,9 @@ package com.yangk.springbootmutildatasource.domain.dos;
 
 import lombok.Data;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -12,105 +15,28 @@ import java.util.Date;
  * @blame yangkun
  */
 @Data
+@Table(name = "user")
 public class UserDO {
 
-    /**
-     * 自增id
-     */
-    private Integer id;
+    @Id
+    @Column(name = "user_id")
+    private Long userId;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
+    @Column(name = "user_name")
+    private String userName;
 
-    /**
-     * 修改时间
-     */
-    private Date modifyTime;
+    @Column(name = "user_phone")
+    private String userPhone;
 
-    /**
-     * 用户id
-     */
-    private String userId;
+    @Column(name = "address")
+    private String address;
 
-    /**
-     * 名/姓名
-     */
-    private String firstName;
+    @Column(name = "weight")
+    private Integer weight;
 
-    /**
-     * 姓
-     */
-    private String lastName;
+    @Column(name = "created_at")
+    private Date createdAt;
 
-    /**
-     * 电话
-     */
-    private String phone;
-
-    /**
-     * 区号
-     */
-    private String areaCode;
-
-    /**
-     * 电话2
-     */
-    private String phone2;
-
-    /**
-     * 公司名
-     */
-    private String company;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 邮编
-     */
-    private String postCode;
-
-    /**
-     * 国家
-     */
-    private String country;
-
-    /**
-     * 省、直辖市、州
-     */
-    private String province;
-
-    /**
-     * 市
-     */
-    private String city;
-
-    /**
-     * 区、县
-     */
-    private String district;
-
-    /**
-     * 乡镇、街道
-     */
-    private String street;
-
-    /**
-     * 门牌号
-     */
-    private String houseNumber;
-
-    /**
-     * 证件类型
-     */
-    private String certificateType;
-
-    /**
-     * 证件号码
-     */
-    private String certificateNo;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }
